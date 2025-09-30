@@ -12,15 +12,15 @@ const (
 
 // Client is an HTTP client for forwarding requests to the Copilot API.
 type Client struct {
-	httpClient *http.Client
-	authToken  string
+	httpClient   *http.Client
+	tokenManager *TokenManager
 }
 
 // NewClient creates a new Copilot client.
-func NewClient(authToken string) *Client {
+func NewClient(tokenManager *TokenManager, timeout time.Duration) *Client {
 	return &Client{
-		httpClient: &http.Client{Timeout: 30 * time.Second},
-		authToken:  authToken,
+		httpClient:   &http.Client{Timeout: timeout},
+		tokenManager: tokenManager,
 	}
 }
 
@@ -43,7 +43,8 @@ func (c *Client) ForwardRequest(ctx context.Context, incomingReq *http.Request) 
 
 	// 4. Set the required headers for the Copilot API.
 	upstreamReq.Host = copilotAPIHost
-	upstreamReq.Header.Set("Authorization", "Bearer "+c.authToken)
+	token := c.tokenManager.GetToken()
+	upstreamReq.Header.Set("Authorization", "Bearer "+token)
 
 	// 5. Execute the request and return the response.
 	// Do not close the response body here; the caller needs to stream it.

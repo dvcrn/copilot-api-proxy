@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"copilot-proxy/internal/server"
 	"copilot-proxy/pkg/config"
@@ -23,8 +24,16 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Create the token manager for handling Copilot token lifecycle
+	tm, err := copilot.NewTokenManager(context.Background(), cfg.CopilotAuthToken, logger)
+	if err != nil {
+		logger.Error("Failed to create token manager", "error", err)
+		os.Exit(1)
+	}
+	defer tm.Close()
+
 	// Create an instance of the Copilot API client
-	copilotClient := copilot.NewClient(cfg.CopilotAuthToken)
+	copilotClient := copilot.NewClient(tm, 30*time.Second)
 
 	// Create a new server instance
 	srv := server.New(cfg.Port, logger, copilotClient)
