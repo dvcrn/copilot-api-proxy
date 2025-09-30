@@ -47,3 +47,24 @@ to run the server
 
 - Set the `COPILOT_TOKEN` environment variable with your GitHub Copilot authentication token.
 - Optionally set `PORT` (defaults to 9871).
+
+### Auto-start on Boot (macOS)
+
+To automatically start the proxy when your system boots:
+
+```bash
+# Install the launch agent
+./install-launchagent.sh
+
+# Check status
+launchctl list | grep copilot-api-proxy
+
+# View logs
+tail -f ~/Library/Logs/copilot-api-proxy.log
+
+# Stop the service
+launchctl unload ~/Library/LaunchAgents/com.copilot-api-proxy.plist
+
+# Uninstall
+./uninstall-launchagent.sh
+```
