@@ -24,8 +24,14 @@ func ExchangeGitHubToken(ctx context.Context, githubToken string) (*ExchangeToke
 	}
 
 	// 2. Add the required headers.
-	req.Header.Set("Authorization", "Bearer "+githubToken)
+	req.Header.Set("Authorization", "token "+githubToken)
 	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("editor-version", "vscode/1.98.1")
+	req.Header.Set("editor-plugin-version", "copilot-chat/0.26.7")
+	req.Header.Set("user-agent", "GitHubCopilotChat/0.26.7")
+	req.Header.Set("x-github-api-version", "2025-04-01")
+	req.Header.Set("x-vscode-user-agent-library-version", "electron-fetch")
 
 	// 3. Execute the request.
 	resp, err := http.DefaultClient.Do(req)
