@@ -2,10 +2,12 @@ package server
 
 import (
 	"bytes"
-	"copilot-api-proxy/pkg/httpstreaming"
 	"encoding/json"
 	"io"
 	"net/http"
+	"time"
+
+	"copilot-api-proxy/pkg/httpstreaming"
 )
 
 // registerRoutes sets up the routing for the server.
@@ -16,6 +18,7 @@ func (s *Server) registerRoutes(router *http.ServeMux) {
 // proxyHandler is the main handler for all incoming requests.
 func (s *Server) proxyHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		startTime := time.Now()
 		s.logger.Info("Incoming request", "method", r.Method, "path", r.URL.Path)
 
 		// Read the body to log the model
@@ -40,8 +43,9 @@ func (s *Server) proxyHandler() http.HandlerFunc {
 
 		// Forward the request to the Copilot client
 		upstreamResp, err := s.copilotClient.ForwardRequest(r.Context(), r)
+		upstreamTime := time.Since(startTime)
 		if err != nil {
-			s.logger.Error("Upstream request failed", "error", err)
+			s.logger.Error("Upstream request failed", "error", err, "upstream_duration_ms", upstreamTime.Milliseconds())
 			http.Error(w, "Failed to proxy request", http.StatusBadGateway)
 			return
 		}
@@ -54,8 +58,11 @@ func (s *Server) proxyHandler() http.HandlerFunc {
 				http.Error(w, "Failed to read upstream error response", http.StatusBadGateway)
 				return
 			}
+			totalTime := time.Since(startTime)
 			s.logger.Error("Upstream request returned non-OK status",
 				"status", upstreamResp.Status,
+				"upstream_duration_ms", upstreamTime.Milliseconds(),
+				"total_duration_ms", totalTime.Milliseconds(),
 				"body", string(bodyBytes))
 
 			// We still want to forward the response to the client
@@ -66,5 +73,9 @@ func (s *Server) proxyHandler() http.HandlerFunc {
 
 		// Stream the response back to the original client
 		httpstreaming.StreamResponse(w, upstreamResp, s.logger)
+		totalTime := time.Since(startTime)
+		s.logger.Info("Request completed",
+			"upstream_duration_ms", upstreamTime.Milliseconds(),
+			"total_duration_ms", totalTime.Milliseconds())
 	}
 }
