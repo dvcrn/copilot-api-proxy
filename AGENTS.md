@@ -1,0 +1,2 @@
+- Always run `just format` in between steps, this will auto-format and fix imports
+- Always run `just build` to confirm that everything is still compiling
