@@ -1,6 +1,6 @@
 # Copilot API Proxy
 
-A reverse proxy server written in Go that forwards `/v1/completion` requests to the GitHub Copilot API, to expose the Copilot API to other tools
+A FAST reverse proxy server written in Go that forwards `/v1/chat/completions` requests to the GitHub Copilot API, to expose the Copilot API to other tools
 
 > [!WARNING]
 > This is a reverse-engineered proxy of GitHub Copilot API. It is not supported by GitHub, and may break unexpectedly. Use at your own risk.
