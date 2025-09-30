@@ -1,4 +1,4 @@
-./bin
+bin/
 .crush
 copilot-api
 /copilot-proxy
