@@ -2,15 +2,16 @@ package main
 
 import (
 	"context"
-	"copilot-api-proxy/internal/server"
-	"copilot-api-proxy/pkg/config"
-	"copilot-api-proxy/pkg/copilot"
 	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"copilot-api-proxy/internal/server"
+	"copilot-api-proxy/pkg/config"
+	"copilot-api-proxy/pkg/copilot"
 )
 
 func main() {
