@@ -14,9 +14,9 @@ type Config struct {
 
 // Load populates the Config struct from environment variables.
 func Load() (*Config, error) {
-	port := os.Getenv("PROXY_PORT")
+	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // Default port
+		port = "9871" // Default port
 	}
 
 	token := os.Getenv("GITHUB_TOKEN")
