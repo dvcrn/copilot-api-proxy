@@ -2,11 +2,11 @@
 
 # Build the application binary
 build:
-    go build -o ./bin/copilot-proxy ./cmd/copilot-proxy
+    go build -o ./bin/copilot-proxy ./cmd/copilot-api-proxy
 
 # Run the application directly
 run:
-    go run ./cmd/copilot-proxy/main.go
+    go run ./cmd/copilot-api-proxy/main.go
 
 # Format all Go source files
 fmt:

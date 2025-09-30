@@ -4,12 +4,12 @@
 
 **Build:**
 ```bash
-go build -o ./bin/copilot-proxy ./cmd/copilot-proxy
+go build -o ./bin/copilot-proxy ./cmd/copilot-api-proxy
 ```
 
 **Run:**
 ```bash
-go run ./cmd/copilot-proxy/main.go
+go run ./cmd/copilot-api-proxy/main.go
 ```
 
 **Format:**
@@ -46,7 +46,7 @@ go test -v -run TestFunctionName ./path/to/package
 
 ### Project Structure
 - Follow standard Go project layout (`cmd/`, `internal/`, `pkg/`)
-- Main entry point: `cmd/copilot-proxy/main.go`
+- Main entry point: `cmd/copilot-api-proxy/main.go`
 - Internal packages: `internal/server/`
 - Shared packages: `pkg/`
 

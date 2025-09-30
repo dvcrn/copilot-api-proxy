@@ -2,11 +2,10 @@ package server
 
 import (
 	"bytes"
+	"copilot-api-proxy/pkg/httpstreaming"
 	"encoding/json"
 	"io"
 	"net/http"
-
-	"copilot-proxy/pkg/httpstreaming"
 )
 
 // registerRoutes sets up the routing for the server.

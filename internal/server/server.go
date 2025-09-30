@@ -2,11 +2,10 @@ package server
 
 import (
 	"context"
+	"copilot-api-proxy/pkg/copilot"
 	"log/slog"
 	"net/http"
 	"time"
-
-	"copilot-proxy/pkg/copilot"
 )
 
 // Server is the main HTTP server for the proxy.
