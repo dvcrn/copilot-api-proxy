@@ -1,6 +1,8 @@
 package server
 
 import (
+	"bytes"
+	"encoding/json"
 	"io"
 	"net/http"
 
@@ -16,6 +18,26 @@ func (s *Server) registerRoutes(router *http.ServeMux) {
 func (s *Server) proxyHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		s.logger.Info("Incoming request", "method", r.Method, "path", r.URL.Path)
+
+		// Read the body to log the model
+		bodyBytes, err := io.ReadAll(r.Body)
+		if err != nil {
+			s.logger.Error("Failed to read request body", "error", err)
+			http.Error(w, "Failed to read request body", http.StatusInternalServerError)
+			return
+		}
+		// Restore the body so it can be read again
+		r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+
+		// Log the model
+		if r.URL.Path == "/v1/chat/completions" {
+			var chatReq struct {
+				Model string `json:"model"`
+			}
+			if err := json.Unmarshal(bodyBytes, &chatReq); err == nil {
+				s.logger.Info("Request model", "model", chatReq.Model)
+			}
+		}
 
 		// Forward the request to the Copilot client
 		upstreamResp, err := s.copilotClient.ForwardRequest(r.Context(), r)
