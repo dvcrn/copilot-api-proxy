@@ -1,6 +1,7 @@
 package server
 
 import (
+	"io"
 	"net/http"
 
 	"copilot-proxy/pkg/httpstreaming"
@@ -24,6 +25,23 @@ func (s *Server) proxyHandler() http.HandlerFunc {
 			return
 		}
 		defer upstreamResp.Body.Close()
+
+		if upstreamResp.StatusCode != http.StatusOK {
+			bodyBytes, err := io.ReadAll(upstreamResp.Body)
+			if err != nil {
+				s.logger.Error("Failed to read upstream error response body", "error", err)
+				http.Error(w, "Failed to read upstream error response", http.StatusBadGateway)
+				return
+			}
+			s.logger.Error("Upstream request returned non-OK status",
+				"status", upstreamResp.Status,
+				"body", string(bodyBytes))
+
+			// We still want to forward the response to the client
+			w.WriteHeader(upstreamResp.StatusCode)
+			w.Write(bodyBytes)
+			return
+		}
 
 		// Stream the response back to the original client
 		httpstreaming.StreamResponse(w, upstreamResp, s.logger)
