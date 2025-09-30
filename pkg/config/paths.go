@@ -10,7 +10,7 @@ func GetGitHubTokenPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(home, ".local", "share", "copilot-api", "github_token"), nil
+	return filepath.Join(home, ".local", "share", "copilot-api-proxy", "github_token"), nil
 }
 
 func EnsurePaths() error {
