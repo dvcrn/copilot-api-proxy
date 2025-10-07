@@ -1,9 +1,6 @@
 # .goreleaser.yml
 version: 2
 project_name: copilot-proxy
-before:
-  hooks:
-    - mkdir -p dist && cp -v release/* dist/
 release:
   github:
     owner: dvcrn
@@ -32,16 +29,11 @@ archives:
   - formats:
       - tar.gz
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
-    files:
-      - src: ./release/package.json
-        dst: .
-      - src: ./release/index.js
-        dst: .
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
+      - "^docs:"
+      - "^test:"

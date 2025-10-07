@@ -20,3 +20,7 @@ description = "Run all tests"
 [tasks.release_gh]
 run = "GITHUB_TOKEN=$(gh auth token) go tool github.com/goreleaser/goreleaser/v2 --clean"
 description = "Build and publish a GitHub draft release using gh auth token"
+
+[tasks.release]
+run = "go tool github.com/goreleaser/goreleaser/v2 --snapshot --clean"
+description = "Local snapshot release and copy release assets into dist"

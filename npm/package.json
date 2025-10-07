@@ -1,8 +1,11 @@
 {
-  "name": "copilot-proxy-release",
+  "name": "copilot-api-proxy",
   "version": "1.0.0",
   "description": "Release package for copilot-proxy",
   "bin": {
     "copilot-api-proxy": "index.js"
+  },
+  "scripts": {
+    "postinstall": "node postinstall.js"
   }
 }
