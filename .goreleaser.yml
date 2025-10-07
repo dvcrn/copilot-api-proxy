@@ -1,0 +1,47 @@
+# .goreleaser.yml
+version: 2
+project_name: copilot-proxy
+before:
+  hooks:
+    - mkdir -p dist && cp -v release/* dist/
+release:
+  github:
+    owner: dvcrn
+    name: copilot-api-proxy
+  draft: true
+builds:
+  - id: copilot-api-proxy
+    main: ./cmd/copilot-api-proxy/
+    binary: copilot-api-proxy
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+      - -buildvcs=false
+    ldflags:
+      - -s -w -buildid=
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      # For Apple Silicon (M1/M2)
+      - arm64
+archives:
+  - formats:
+      - tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - src: ./release/package.json
+        dst: .
+      - src: ./release/index.js
+        dst: .
+checksum:
+  name_template: 'checksums.txt'
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'

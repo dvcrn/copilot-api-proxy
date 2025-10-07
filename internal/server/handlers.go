@@ -12,7 +12,6 @@ import (
 
 // registerRoutes sets up the routing for the server.
 func (s *Server) registerRoutes(router *http.ServeMux) {
-
 	router.HandleFunc("/v1/models", s.modelsHandler())
 	router.HandleFunc("/models", s.modelsHandler())
 	router.HandleFunc("/", s.proxyHandler())

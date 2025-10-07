@@ -1,2 +1,2 @@
-- Always run `just format` in between steps, this will auto-format and fix imports
-- Always run `just build` to confirm that everything is still compiling
+- Always run `mise run fmt` in between steps, this will auto-format and fix imports
+- Always run `mise run build` to confirm that everything is still compiling

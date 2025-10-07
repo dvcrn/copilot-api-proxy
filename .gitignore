@@ -2,3 +2,6 @@ bin/
 .crush
 copilot-api
 /copilot-proxy
+
+# GoReleaser build output
+dist/

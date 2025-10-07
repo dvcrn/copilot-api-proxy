@@ -1,0 +1,8 @@
+{
+  "name": "copilot-proxy-release",
+  "version": "1.0.0",
+  "description": "Release package for copilot-proxy",
+  "bin": {
+    "copilot-api-proxy": "index.js"
+  }
+}

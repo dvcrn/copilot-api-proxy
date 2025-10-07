@@ -1,0 +1,22 @@
+[tools]
+go = "1.25.1"
+
+[tasks.build]
+run = "CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o ./bin/copilot-proxy ./cmd/copilot-api-proxy"
+description = "Build the application binary with size optimizations"
+
+[tasks.run]
+run = "go run ./cmd/copilot-api-proxy/main.go"
+description = "Run the application directly"
+
+[tasks.fmt]
+run = "go tool golang.org/x/tools/cmd/goimports -w . && go tool mvdan.cc/gofumpt -w ."
+description = "Format all Go source files with goimports and gofumpt"
+
+[tasks.test]
+run = "go test -v ./..."
+description = "Run all tests"
+
+[tasks.release_gh]
+run = "GITHUB_TOKEN=$(gh auth token) go tool github.com/goreleaser/goreleaser/v2 --clean"
+description = "Build and publish a GitHub draft release using gh auth token"
