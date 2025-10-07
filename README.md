@@ -25,6 +25,14 @@ A FAST reverse proxy server written in Go that forwards `/v1/chat/completions` r
 go install github.com/dvcrn/copilot-api-proxy/cmd/copilot-api-proxy@latest
 ```
 
+or
+
+```
+npm install -g copilot-api-proxy
+```
+
+(this is not written in js, just distributed through npm)
+
 ### Authenticate
 
 Run
