@@ -1,0 +1,16 @@
+# Exclude compiled binaries and stray artifacts
+copilot-api-proxy
+copilot-api-proxy.exe
+*.bak
+*.old
+*.log
+*.tar.gz
+
+# Common junk
+.DS_Store
+node_modules
+
+# Build output directories we don't want in the package
+dist
+release
+bin
