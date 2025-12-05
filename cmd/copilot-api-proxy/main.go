@@ -106,7 +106,7 @@ func runServer(logger *slog.Logger) {
 
 	// Create an instance of the Copilot API client
 
-	copilotClient := copilot.NewClient(tm, 30*time.Second)
+	copilotClient := copilot.NewClient(tm, 2*time.Minute)
 
 	// Create a new server instance
 	srv := server.New(cfg.Port, logger, copilotClient)
