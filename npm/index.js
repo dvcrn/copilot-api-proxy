@@ -19,14 +19,14 @@ function mapArch(arch) {
 }
 
 function findBinary(baseDir, osName, archName) {
-  const exe = process.platform === 'win32' ? 'copilot-api-proxy.exe' : 'copilot-api-proxy';
+  const exe = process.platform === 'win32' ? 'copilot-oauth-proxy.exe' : 'copilot-oauth-proxy';
 
   // 1) Prefer binary next to this script (archive root case)
   const rootCandidate = path.join(baseDir, exe);
   if (fs.existsSync(rootCandidate)) return rootCandidate;
 
   // 2) Look for GoReleaser build output directories in dist pattern
-  //    e.g. copilot-api-proxy_darwin_arm64_v8.0, copilot-api-proxy_linux_amd64_v1
+  //    e.g. copilot-oauth-proxy_darwin_arm64_v8.0, copilot-oauth-proxy_linux_amd64_v1
   let entries = [];
   try {
     entries = fs.readdirSync(baseDir, { withFileTypes: true });
@@ -34,7 +34,7 @@ function findBinary(baseDir, osName, archName) {
     entries = [];
   }
 
-  const prefix = `copilot-api-proxy_${osName}_${archName}`;
+  const prefix = `copilot-oauth-proxy_${osName}_${archName}`;
   const dir = entries
     .filter((e) => e.isDirectory() && e.name.startsWith(prefix))
     // If multiple, prefer ones without extra suffix first, else the shortest name

@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"copilot-api-proxy/pkg/httpstreaming"
+	"copilot-oauth-proxy/pkg/httpstreaming"
 )
 
 // registerRoutes sets up the routing for the server.

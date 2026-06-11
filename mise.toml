@@ -2,11 +2,11 @@
 go = "1.25.1"
 
 [tasks.build]
-run = "CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o ./bin/copilot-proxy ./cmd/copilot-api-proxy"
+run = "CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o ./bin/copilot-oauth-proxy ./cmd/copilot-oauth-proxy"
 description = "Build the application binary with size optimizations"
 
 [tasks.run]
-run = "go run ./cmd/copilot-api-proxy/main.go"
+run = "go run ./cmd/copilot-oauth-proxy/main.go"
 description = "Run the application directly"
 
 [tasks.fmt]

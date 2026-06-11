@@ -1,6 +1,6 @@
 # Exclude compiled binaries and stray artifacts
-copilot-api-proxy
-copilot-api-proxy.exe
+copilot-oauth-proxy
+copilot-oauth-proxy.exe
 *.bak
 *.old
 *.log

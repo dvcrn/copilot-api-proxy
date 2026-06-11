@@ -1,4 +1,4 @@
-# Copilot API Proxy
+# Copilot OAuth Proxy
 
 A FAST reverse proxy server written in Go that forwards `/v1/chat/completions` requests to the GitHub Copilot API, to expose the Copilot API to other tools
 
@@ -22,13 +22,13 @@ A FAST reverse proxy server written in Go that forwards `/v1/chat/completions` r
 ## Setup
 
 ```
-go install github.com/dvcrn/copilot-api-proxy/cmd/copilot-api-proxy@latest
+go install github.com/dvcrn/copilot-oauth-proxy/cmd/copilot-oauth-proxy@latest
 ```
 
 or
 
 ```
-npm install -g copilot-api-proxy
+npm install -g copilot-oauth-proxy
 ```
 
 (this is not written in js, just distributed through npm)
@@ -38,7 +38,7 @@ npm install -g copilot-api-proxy
 Run
 
 ```
-copilot-api-proxy auth
+copilot-oauth-proxy auth
 ```
 
 which will start the Copilot auth flow
@@ -46,7 +46,7 @@ which will start the Copilot auth flow
 Then run
 
 ```
-copilot-api-proxy server
+copilot-oauth-proxy server
 ```
 
 to run the server
@@ -65,13 +65,13 @@ To automatically start the proxy when your system boots:
 ./install-launchagent.sh
 
 # Check status
-launchctl list | grep copilot-api-proxy
+launchctl list | grep copilot-oauth-proxy
 
 # View logs
-tail -f ~/Library/Logs/copilot-api-proxy.log
+tail -f ~/Library/Logs/copilot-oauth-proxy.log
 
 # Stop the service
-launchctl unload ~/Library/LaunchAgents/com.copilot-api-proxy.plist
+launchctl unload ~/Library/LaunchAgents/sh.d.copilot-oauth-proxy.plist
 
 # Uninstall
 ./uninstall-launchagent.sh
