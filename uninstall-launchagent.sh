@@ -1,14 +1,14 @@
 #!/bin/bash
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PLIST_NAME="com.copilot-oauth-proxy.plist"
+PLIST_NAME="sh.d.copilot-oauth-proxy.plist"
 PLIST_LOCAL="${PROJECT_DIR}/${PLIST_NAME}"
 PLIST_SYMLINK="${HOME}/Library/LaunchAgents/${PLIST_NAME}"
 
 echo "Uninstalling copilot-oauth-proxy LaunchAgent..."
 
 # Check if the service is running and unload it
-if launchctl list | grep -q "com.copilot-oauth-proxy"; then
+if launchctl list | grep -q "sh.d.copilot-oauth-proxy"; then
     echo "Stopping service..."
     launchctl unload "${PLIST_SYMLINK}" 2>/dev/null || true
     echo "Service stopped"

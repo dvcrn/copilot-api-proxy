@@ -71,7 +71,7 @@ launchctl list | grep copilot-oauth-proxy
 tail -f ~/Library/Logs/copilot-oauth-proxy.log
 
 # Stop the service
-launchctl unload ~/Library/LaunchAgents/com.copilot-oauth-proxy.plist
+launchctl unload ~/Library/LaunchAgents/sh.d.copilot-oauth-proxy.plist
 
 # Uninstall
 ./uninstall-launchagent.sh

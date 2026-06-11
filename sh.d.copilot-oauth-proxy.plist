@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.copilot-oauth-proxy</string>
+    <string>sh.d.copilot-oauth-proxy</string>
 
     <key>Program</key>
     <string>/Users/david/src/copilot-proxy/run_proxy.sh</string>
