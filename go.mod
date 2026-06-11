@@ -1,4 +1,4 @@
-module copilot-oauth-proxy
+module github.com/dvcrn/copilot-oauth-proxy
 
 go 1.25.1
 

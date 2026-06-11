@@ -4,9 +4,9 @@ const os = require("os");
 const https = require("https");
 const semver = require("semver");
 
-const DEFAULT_PACKAGE_NAME = "copilot-api-proxy";
-const DEFAULT_UPDATE_COMMAND = "npm install -g copilot-api-proxy";
-const CACHE_DIR_NAME = "copilot-api-proxy";
+const DEFAULT_PACKAGE_NAME = "copilot-oauth-proxy";
+const DEFAULT_UPDATE_COMMAND = "npm install -g copilot-oauth-proxy";
+const CACHE_DIR_NAME = "copilot-oauth-proxy";
 
 const UPDATE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const UPDATE_CHECK_TIMEOUT_MS = 1200;

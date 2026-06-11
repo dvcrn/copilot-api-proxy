@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"copilot-oauth-proxy/pkg/copilot"
+	"github.com/dvcrn/copilot-oauth-proxy/pkg/copilot"
 )
 
 // Server is the main HTTP server for the proxy.

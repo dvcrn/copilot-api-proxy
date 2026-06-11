@@ -21,13 +21,21 @@ A FAST reverse proxy server written in Go that forwards `/v1/chat/completions` r
 
 ## Setup
 
+With mise:
+
+```bash
+mise use -g go:github.com/dvcrn/copilot-oauth-proxy/cmd/copilot-oauth-proxy@latest
 ```
+
+With Go:
+
+```bash
 go install github.com/dvcrn/copilot-oauth-proxy/cmd/copilot-oauth-proxy@latest
 ```
 
-or
+With npm:
 
-```
+```bash
 npm install -g copilot-oauth-proxy
 ```
 

@@ -9,9 +9,9 @@ import (
 	"syscall"
 	"time"
 
-	"copilot-oauth-proxy/internal/server"
-	"copilot-oauth-proxy/pkg/config"
-	"copilot-oauth-proxy/pkg/copilot"
+	"github.com/dvcrn/copilot-oauth-proxy/internal/server"
+	"github.com/dvcrn/copilot-oauth-proxy/pkg/config"
+	"github.com/dvcrn/copilot-oauth-proxy/pkg/copilot"
 )
 
 func main() {
