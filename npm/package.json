@@ -1,6 +1,6 @@
 {
   "name": "copilot-oauth-proxy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Release package for copilot-oauth-proxy",
   "repository": {
     "type": "git",
