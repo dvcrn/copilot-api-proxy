@@ -1,4 +1,4 @@
-module copilot-api-proxy
+module copilot-oauth-proxy
 
 go 1.25.1
 

@@ -4,12 +4,12 @@ project_name: copilot-proxy
 release:
   github:
     owner: dvcrn
-    name: copilot-api-proxy
+    name: copilot-oauth-proxy
   draft: true
 builds:
-  - id: copilot-api-proxy
-    main: ./cmd/copilot-api-proxy/
-    binary: copilot-api-proxy
+  - id: copilot-oauth-proxy
+    main: ./cmd/copilot-oauth-proxy/
+    binary: copilot-oauth-proxy
     env:
       - CGO_ENABLED=0
     flags:

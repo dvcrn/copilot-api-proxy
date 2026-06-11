@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.copilot-api-proxy</string>
+    <string>com.copilot-oauth-proxy</string>
 
     <key>Program</key>
     <string>/Users/david/src/copilot-proxy/run_proxy.sh</string>
@@ -26,10 +26,10 @@
     <integer>30</integer>
 
     <key>StandardOutPath</key>
-    <string>/Users/david/Library/Logs/copilot-api-proxy.log</string>
+    <string>/Users/david/Library/Logs/copilot-oauth-proxy.log</string>
 
     <key>StandardErrorPath</key>
-    <string>/Users/david/Library/Logs/copilot-api-proxy.error.log</string>
+    <string>/Users/david/Library/Logs/copilot-oauth-proxy.error.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>

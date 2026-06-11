@@ -26,7 +26,7 @@ Standard Release Workflow
    - `mise run release_gh` (runs GoReleaser with `--clean`, producing a Draft release on GitHub).
 6) Verify assets in the Draft release:
    - Assets should be `copilot-proxy_X.Y.Z_<os>_<arch>.tar.gz` plus `checksums.txt`.
-   - Spot check one asset: download locally and confirm `tar -tzf` contains only the `copilot-api-proxy[.exe]` binary.
+   - Spot check one asset: download locally and confirm `tar -tzf` contains only the `copilot-oauth-proxy[.exe]` binary.
 7) Publish the GitHub release (remove Draft):
    - Npm postinstall downloads from the published `releases/download/vX.Y.Z/…` URL; Draft releases will 404.
 8) Publish the npm package:
@@ -35,8 +35,8 @@ Standard Release Workflow
    - Subsequent releases: `npm publish`
    - `.npmignore` ensures local binaries aren’t bundled.
 9) Sanity check install:
-   - `npm install -g copilot-api-proxy@X.Y.Z`
-   - Confirm the install downloads the right asset and places the `copilot-api-proxy` binary in the package directory.
+   - `npm install -g copilot-oauth-proxy@X.Y.Z`
+   - Confirm the install downloads the right asset and places the `copilot-oauth-proxy` binary in the package directory.
 
 Local Dry‑Run (optional)
 - Build snapshot artifacts locally: `mise run release`

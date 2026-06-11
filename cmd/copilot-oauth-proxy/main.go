@@ -9,9 +9,9 @@ import (
 	"syscall"
 	"time"
 
-	"copilot-api-proxy/internal/server"
-	"copilot-api-proxy/pkg/config"
-	"copilot-api-proxy/pkg/copilot"
+	"copilot-oauth-proxy/internal/server"
+	"copilot-oauth-proxy/pkg/config"
+	"copilot-oauth-proxy/pkg/copilot"
 )
 
 func main() {
@@ -42,7 +42,7 @@ func main() {
 }
 
 func printUsage(logger *slog.Logger) {
-	fmt.Println("Usage: go run cmd/copilot-api-proxy/main.go [command]")
+	fmt.Println("Usage: go run cmd/copilot-oauth-proxy/main.go [command]")
 	fmt.Println("Commands:")
 	fmt.Println("  auth    - Exchange a GitHub token for a Copilot token and print it.")
 	fmt.Println("  server  - Run the Copilot proxy server.")

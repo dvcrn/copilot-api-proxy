@@ -15,7 +15,7 @@ The project will follow a standard Go project layout to separate concerns.
 ```
 /copilot-proxy/
 ├─── cmd/
-│   └─── copilot-api-proxy/
+│   └─── copilot-oauth-proxy/
 │       └─── main.go           # Application entry point
 ├─── internal/
 │   └─── server/
@@ -36,7 +36,7 @@ The project will follow a standard Go project layout to separate concerns.
 
 ## 3. Component Deep Dive
 
-### `cmd/copilot-api-proxy/main.go`
+### `cmd/copilot-oauth-proxy/main.go`
 
 **Responsibility:** Initializes and starts the application. It wires all the components together.
 
@@ -163,7 +163,7 @@ import (
 	"net/http"
 	"time"
 
-	"copilot-api-proxy/pkg/copilot"
+	"copilot-oauth-proxy/pkg/copilot"
 )
 
 // Server is the main HTTP server for the proxy.
@@ -220,7 +220,7 @@ package server
 import (
 	"net/http"
 
-	"copilot-api-proxy/pkg/httpstreaming"
+	"copilot-oauth-proxy/pkg/httpstreaming"
 )
 
 // registerRoutes sets up the routing for the server.
@@ -312,11 +312,11 @@ A `justfile` will be provided to standardize common development tasks.
 
 # Build the application binary
 build:
-    go build -o ./bin/copilot-proxy ./cmd/copilot-api-proxy
+    go build -o ./bin/copilot-proxy ./cmd/copilot-oauth-proxy
 
 # Run the application directly
 run:
-    go run ./cmd/copilot-api-proxy/main.go
+    go run ./cmd/copilot-oauth-proxy/main.go
 
 # Format all Go source files
 fmt:

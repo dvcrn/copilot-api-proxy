@@ -8,7 +8,7 @@ const { spawnSync } = require('child_process');
 const crypto = require('crypto');
 
 const OWNER = 'dvcrn';
-const REPO = 'copilot-api-proxy';
+const REPO = 'copilot-oauth-proxy';
 
 function mapOs(osName) {
   if (osName === 'win32') return 'windows';
@@ -77,7 +77,7 @@ function sha256(buf) {
     const outDir = __dirname; // package dir
 
     // If binary already present, skip
-    const exe = process.platform === 'win32' ? 'copilot-api-proxy.exe' : 'copilot-api-proxy';
+    const exe = process.platform === 'win32' ? 'copilot-oauth-proxy.exe' : 'copilot-oauth-proxy';
     const binPath = path.join(outDir, exe);
     if (fs.existsSync(binPath)) {
       // already installed

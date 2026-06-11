@@ -4,12 +4,12 @@ set -e
 
 # Get the absolute path of the current directory
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PLIST_NAME="com.copilot-api-proxy.plist"
+PLIST_NAME="com.copilot-oauth-proxy.plist"
 PLIST_LOCAL="${PROJECT_DIR}/${PLIST_NAME}"
 LAUNCHAGENTS_DIR="${HOME}/Library/LaunchAgents"
 PLIST_SYMLINK="${LAUNCHAGENTS_DIR}/${PLIST_NAME}"
 
-echo "Installing copilot-api-proxy LaunchAgent..."
+echo "Installing copilot-oauth-proxy LaunchAgent..."
 echo "Project directory: ${PROJECT_DIR}"
 
 # Create LaunchAgents directory if it doesn't exist
@@ -22,7 +22,7 @@ cat > "${PLIST_LOCAL}" <<EOF
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.copilot-api-proxy</string>
+    <string>com.copilot-oauth-proxy</string>
 
     <key>Program</key>
     <string>${PROJECT_DIR}/run_proxy.sh</string>
@@ -45,10 +45,10 @@ cat > "${PLIST_LOCAL}" <<EOF
     <integer>30</integer>
 
     <key>StandardOutPath</key>
-    <string>${HOME}/Library/Logs/copilot-api-proxy.log</string>
+    <string>${HOME}/Library/Logs/copilot-oauth-proxy.log</string>
 
     <key>StandardErrorPath</key>
-    <string>${HOME}/Library/Logs/copilot-api-proxy.error.log</string>
+    <string>${HOME}/Library/Logs/copilot-oauth-proxy.error.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>
@@ -76,7 +76,7 @@ if [ -L "${PLIST_SYMLINK}" ]; then
 fi
 
 # Unload the service if it's already running
-if launchctl list | grep -q "com.copilot-api-proxy"; then
+if launchctl list | grep -q "com.copilot-oauth-proxy"; then
     echo "Unloading existing service..."
     launchctl unload "${PLIST_SYMLINK}" 2>/dev/null || true
 fi
@@ -97,17 +97,17 @@ launchctl load "${PLIST_SYMLINK}"
 
 # Check if the service is running
 sleep 2
-if launchctl list | grep -q "com.copilot-api-proxy"; then
+if launchctl list | grep -q "com.copilot-oauth-proxy"; then
     echo "✅ LaunchAgent installed and started successfully!"
     echo ""
     echo "Service management commands:"
-    echo "  Check status:  launchctl list | grep copilot-api-proxy"
-    echo "  View logs:     tail -f ~/Library/Logs/copilot-api-proxy.log"
-    echo "  View errors:   tail -f ~/Library/Logs/copilot-api-proxy.error.log"
+    echo "  Check status:  launchctl list | grep copilot-oauth-proxy"
+    echo "  View logs:     tail -f ~/Library/Logs/copilot-oauth-proxy.log"
+    echo "  View errors:   tail -f ~/Library/Logs/copilot-oauth-proxy.error.log"
     echo "  Stop service:  launchctl unload ~/Library/LaunchAgents/${PLIST_NAME}"
     echo "  Start service: launchctl load ~/Library/LaunchAgents/${PLIST_NAME}"
     echo "  Uninstall:     ./uninstall-launchagent.sh"
 else
     echo "⚠️  Service may not have started correctly. Check logs at:"
-    echo "  ~/Library/Logs/copilot-api-proxy.error.log"
+    echo "  ~/Library/Logs/copilot-oauth-proxy.error.log"
 fi

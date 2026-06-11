@@ -6,4 +6,4 @@ copilot-api
 # GoReleaser build output
 dist/
 
-npm/copilot-api-proxy*
+npm/copilot-oauth-proxy*
