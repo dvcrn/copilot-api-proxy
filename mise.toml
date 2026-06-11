@@ -1,6 +1,5 @@
 [tools]
 go = "1.25.1"
-node = "20"
 
 [tasks.fix]
 description = "Auto-applies Golang fixes"
