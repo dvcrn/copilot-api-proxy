@@ -75,6 +75,16 @@ if [ -L "${PLIST_SYMLINK}" ]; then
     rm "${PLIST_SYMLINK}"
 fi
 
+# Unload any previously installed services (including older names) to avoid
+# port conflicts during an upgrade.
+for OLD_LABEL in "com.copilot-api-proxy" "com.copilot-oauth-proxy"; do
+    if launchctl list | grep -q "${OLD_LABEL}"; then
+        echo "Unloading old ${OLD_LABEL} service..."
+        launchctl unload "${LAUNCHAGENTS_DIR}/${OLD_LABEL}.plist" 2>/dev/null || true
+    fi
+    rm -f "${LAUNCHAGENTS_DIR}/${OLD_LABEL}.plist"
+done
+
 # Unload the service if it's already running
 if launchctl list | grep -q "sh.d.copilot-oauth-proxy"; then
     echo "Unloading existing service..."
