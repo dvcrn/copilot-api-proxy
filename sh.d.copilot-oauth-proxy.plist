@@ -6,10 +6,10 @@
     <string>sh.d.copilot-oauth-proxy</string>
 
     <key>Program</key>
-    <string>/Users/david/src/copilot-proxy/run_proxy.sh</string>
+    <string>/Users/david/src/copilot-oauth-proxy/run_proxy.sh</string>
 
     <key>WorkingDirectory</key>
-    <string>/Users/david/src/copilot-proxy</string>
+    <string>/Users/david/src/copilot-oauth-proxy</string>
 
     <key>RunAtLoad</key>
     <true/>

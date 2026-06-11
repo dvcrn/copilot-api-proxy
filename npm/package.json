@@ -1,7 +1,7 @@
 {
   "name": "copilot-oauth-proxy",
   "version": "1.0.0",
-  "description": "Release package for copilot-proxy",
+  "description": "Release package for copilot-oauth-proxy",
   "bin": {
     "copilot-oauth-proxy": "index.js"
   },

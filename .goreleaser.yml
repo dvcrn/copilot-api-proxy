@@ -1,6 +1,6 @@
 # .goreleaser.yml
 version: 2
-project_name: copilot-proxy
+project_name: copilot-oauth-proxy
 release:
   github:
     owner: dvcrn

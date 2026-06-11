@@ -13,7 +13,7 @@ The project will follow a standard Go project layout to separate concerns.
 #### **Directory Structure**
 
 ```
-/copilot-proxy/
+/copilot-oauth-proxy/
 ├─── cmd/
 │   └─── copilot-oauth-proxy/
 │       └─── main.go           # Application entry point
@@ -312,7 +312,7 @@ A `justfile` will be provided to standardize common development tasks.
 
 # Build the application binary
 build:
-    go build -o ./bin/copilot-proxy ./cmd/copilot-oauth-proxy
+    go build -o ./bin/copilot-oauth-proxy ./cmd/copilot-oauth-proxy
 
 # Run the application directly
 run:

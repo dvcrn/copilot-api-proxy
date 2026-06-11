@@ -64,7 +64,7 @@ function sha256(buf) {
       process.exit(1);
     }
 
-    const assetName = `copilot-proxy_${version}_${osName}_${archName}.tar.gz`;
+    const assetName = `copilot-oauth-proxy_${version}_${osName}_${archName}.tar.gz`;
     const base = process.env.COPILOT_PROXY_BASE_URL || `https://github.com/${OWNER}/${REPO}/releases/download/v${version}`;
     const url = `${base}/${assetName}`;
     const checksumsUrl = `${base}/checksums.txt`;
