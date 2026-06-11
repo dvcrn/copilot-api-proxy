@@ -1,33 +1,28 @@
 #!/usr/bin/env node
+const fs = require("fs");
+const path = require("path");
+const os = require("os");
+const https = require("https");
+const crypto = require("crypto");
+const { spawnSync } = require("child_process");
 
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
-const https = require('https');
-const { spawnSync } = require('child_process');
-const crypto = require('crypto');
-
-const OWNER = 'dvcrn';
-const REPO = 'copilot-oauth-proxy';
-
-function mapOs(osName) {
-  if (osName === 'win32') return 'windows';
-  if (osName === 'darwin') return 'darwin';
-  if (osName === 'linux') return 'linux';
-  return osName;
-}
-
-function mapArch(arch) {
-  if (arch === 'x64') return 'amd64';
-  if (arch === 'arm64') return 'arm64';
-  return arch;
-}
+const OWNER = "dvcrn";
+const REPO = "copilot-oauth-proxy";
+const BIN = "copilot-oauth-proxy";
+const VERSION_ENV = "COPILOT_PROXY_VERSION";
+const BASE_URL_ENV = "COPILOT_PROXY_BASE_URL";
+const ARCH_ENV = "COPILOT_PROXY_ARCH";
+const PLATFORM_ENV = "COPILOT_PROXY_PLATFORM";
 
 function httpGet(url, { headers } = {}) {
   return new Promise((resolve, reject) => {
     const req = https.get(url, { headers }, (res) => {
-      if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-        // follow redirects
+      if (
+        res.statusCode &&
+        res.statusCode >= 300 &&
+        res.statusCode < 400 &&
+        res.headers.location
+      ) {
         resolve(httpGet(res.headers.location, { headers }));
         return;
       }
@@ -36,101 +31,159 @@ function httpGet(url, { headers } = {}) {
         return;
       }
       const chunks = [];
-      res.on('data', (c) => chunks.push(c));
-      res.on('end', () => resolve(Buffer.concat(chunks)));
+      res.on("data", (c) => chunks.push(c));
+      res.on("end", () => resolve(Buffer.concat(chunks)));
     });
-    req.on('error', reject);
+    req.on("error", reject);
   });
 }
 
 function sha256(buf) {
-  const h = crypto.createHash('sha256');
+  const h = crypto.createHash("sha256");
   h.update(buf);
-  return h.digest('hex');
+  return h.digest("hex");
 }
 
-(async function main() {
-  try {
-    const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
-    const version = (process.env.COPILOT_PROXY_VERSION || pkg.version || '').replace(/^v/, '');
-    if (!version) {
-      console.error('postinstall: could not determine version from package.json');
-      process.exit(1);
+function parseChecksums(text) {
+  const map = new Map();
+  const lines = text
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+  for (const line of lines) {
+    let m = line.match(/^([a-f0-9]{64})\s+(.+)$/i);
+    if (m) {
+      map.set(m[2], m[1]);
+      continue;
     }
-    const osName = mapOs(process.platform);
-    const archName = mapArch(process.arch);
-    if (!['windows', 'darwin', 'linux'].includes(osName) || !['amd64', 'arm64'].includes(archName)) {
-      console.error(`Unsupported platform: os=${osName}, arch=${archName}`);
-      process.exit(1);
+    m = line.match(/^sha256:([a-f0-9]{64})\s+(.+)$/i);
+    if (m) {
+      map.set(m[2], m[1]);
+      continue;
     }
+    m = line.match(/^SHA256\s+\((.+)\)\s+=\s+([a-f0-9]{64})$/i);
+    if (m) {
+      map.set(m[1], m[2]);
+      continue;
+    }
+  }
+  return map;
+}
 
-    const assetName = `copilot-oauth-proxy_${version}_${osName}_${archName}.tar.gz`;
-    const base = process.env.COPILOT_PROXY_BASE_URL || `https://github.com/${OWNER}/${REPO}/releases/download/v${version}`;
+async function installBinary() {
+  const platformRaw = process.env[PLATFORM_ENV] || process.platform;
+  const platform = platformRaw === "win32" ? "windows" : platformRaw;
+  if (!["darwin", "linux", "windows"].includes(platform)) {
+    throw new Error(
+      "copilot-oauth-proxy: npm install supports macOS (darwin), Linux, and Windows only",
+    );
+  }
+
+  const pkg = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "package.json"), "utf8"),
+  );
+  const version = process.env[VERSION_ENV] || pkg.version || "";
+  if (!version) {
+    throw new Error("postinstall: could not determine version");
+  }
+
+  const detectedArch =
+    process.arch === "x64"
+      ? "amd64"
+      : process.arch === "arm64"
+        ? "arm64"
+        : process.arch === "arm"
+          ? "armv7"
+          : process.arch;
+  const arch = process.env[ARCH_ENV] || detectedArch;
+  if (!["amd64", "arm64", "armv7"].includes(arch)) {
+    throw new Error(`Unsupported arch: ${arch}`);
+  }
+  if (platform === "windows" && arch === "armv7") {
+    throw new Error(`Unsupported Windows arch: ${arch}`);
+  }
+
+  const archSuffix = arch === "armv7" ? "armv7" : arch;
+  const assetName = `${BIN}_${version}_${platform}_${archSuffix}.tar.gz`;
+  const baseOverride = process.env[BASE_URL_ENV];
+  const bases = baseOverride
+    ? [baseOverride]
+    : [
+        `https://github.com/${OWNER}/${REPO}/releases/download/${version}`,
+        `https://github.com/${OWNER}/${REPO}/releases/download/v${version}`,
+      ];
+  const headers = { "User-Agent": `${REPO}-postinstall` };
+  const outDir = __dirname;
+  const exe = platform === "windows" ? `${BIN}.exe` : BIN;
+  const binPath = path.join(outDir, exe);
+
+  if (fs.existsSync(binPath)) {
+    try {
+      fs.chmodSync(binPath, 0o755);
+    } catch {}
+    return;
+  }
+
+  let tarGz = null;
+  let baseUsed = "";
+  let lastErr = null;
+  for (const base of bases) {
     const url = `${base}/${assetName}`;
-    const checksumsUrl = `${base}/checksums.txt`;
-
-    const headers = {};
-    const token = process.env.GITHUB_TOKEN;
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    headers['User-Agent'] = `${REPO}-postinstall`;
-
-    const outDir = __dirname; // package dir
-
-    // If binary already present, skip
-    const exe = process.platform === 'win32' ? 'copilot-oauth-proxy.exe' : 'copilot-oauth-proxy';
-    const binPath = path.join(outDir, exe);
-    if (fs.existsSync(binPath)) {
-      // already installed
-      try { if (process.platform !== 'win32') fs.chmodSync(binPath, 0o755); } catch {}
-      console.log(`postinstall: binary already present at ${binPath}, skipping download.`);
-      return;
-    }
-
     console.log(`postinstall: downloading ${assetName} from ${url}`);
-    const tarGz = await httpGet(url, { headers });
-
-    // Optional checksum verification unless opted out
-    if (process.env.COPILOT_PROXY_SKIP_CHECKSUM !== '1') {
-      try {
-        const checksumsBuf = await httpGet(checksumsUrl, { headers });
-        const sumExpected = checksumsBuf
-          .toString('utf8')
-          .split(/\r?\n/)
-          .map((l) => l.trim())
-          .filter(Boolean)
-          .map((l) => l.split(/[\s\t]+/))
-          .find(([, name]) => name === assetName)?.[0];
-        if (!sumExpected) throw new Error('asset not found in checksums.txt');
-        const sumActual = sha256(tarGz);
-        if (sumActual.toLowerCase() !== sumExpected.toLowerCase()) {
-          throw new Error(`checksum mismatch: expected ${sumExpected}, got ${sumActual}`);
-        }
-        console.log('postinstall: checksum OK');
-      } catch (e) {
-        console.warn(`postinstall: checksum verification skipped/failed: ${e.message}`);
-      }
+    try {
+      tarGz = await httpGet(url, { headers });
+      baseUsed = base;
+      break;
+    } catch (e) {
+      lastErr = e;
     }
+  }
+  if (!tarGz) throw lastErr || new Error("failed to download binary");
 
-    // Write tarball to temp and extract only the binary to avoid colliding with package files
-    const tmpFile = path.join(os.tmpdir(), `${REPO}-${Date.now()}.tar.gz`);
-    fs.writeFileSync(tmpFile, tarGz);
+  // checksum verification — hard fail on mismatch, skip if file unavailable
+  try {
+    const checksumsUrl = `${baseUsed}/checksums.txt`;
+    const checksumsBuf = await httpGet(checksumsUrl, { headers });
+    const checksums = parseChecksums(checksumsBuf.toString("utf8"));
+    const sumExpected = checksums.get(assetName);
+    if (sumExpected) {
+      const sumActual = sha256(tarGz);
+      if (sumActual.toLowerCase() !== sumExpected.toLowerCase())
+        throw new Error("checksum mismatch");
+      console.log("postinstall: checksum OK");
+    } else {
+      console.warn("postinstall: asset not in checksums.txt, skipping verification");
+    }
+  } catch (e) {
+    if (e.message === "checksum mismatch") throw e;
+    console.warn(`postinstall: checksum verification skipped: ${e.message}`);
+  }
 
-    const tarArgs = ['-xzf', tmpFile, '-C', outDir, exe];
-    const tarRes = spawnSync('tar', tarArgs, { stdio: 'inherit' });
+  // extract only the binary into npm directory (archive contains binary at root)
+  const tmpFile = path.join(os.tmpdir(), `${REPO}-${Date.now()}.tar.gz`);
+  fs.writeFileSync(tmpFile, tarGz);
+  try {
+    const tarRes = spawnSync("tar", ["-xzf", tmpFile, "-C", outDir, exe], {
+      stdio: "inherit",
+    });
     if (tarRes.status !== 0) {
-      console.error('postinstall: failed to extract binary from tarball; ensure "tar" is available and archive layout matches.');
-      try { fs.unlinkSync(tmpFile); } catch {}
-      process.exit(1);
+      try { fs.unlinkSync(binPath); } catch {}
+      throw new Error("postinstall: failed to extract binary");
     }
-
-    // Ensure executable
-    try { if (process.platform !== 'win32') fs.chmodSync(binPath, 0o755); } catch {}
-    // Cleanup
+    try {
+      fs.chmodSync(binPath, 0o755);
+    } catch {}
+  } finally {
     try { fs.unlinkSync(tmpFile); } catch {}
+  }
+  console.log(`postinstall: installed ${exe} to ${outDir}`);
+}
 
-    console.log(`postinstall: installed ${exe} to ${outDir}`);
-  } catch (err) {
+if (require.main === module) {
+  installBinary().catch((err) => {
     console.error(`postinstall error: ${err.message}`);
     process.exit(1);
-  }
-})();
+  });
+}
+
+module.exports = { installBinary };

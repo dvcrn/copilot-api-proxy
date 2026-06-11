@@ -7,5 +7,11 @@
   },
   "scripts": {
     "postinstall": "node postinstall.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "semver": "^7.7.4"
   }
 }

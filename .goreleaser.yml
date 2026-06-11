@@ -1,39 +1,56 @@
-# .goreleaser.yml
 version: 2
+
 project_name: copilot-oauth-proxy
-release:
-  github:
-    owner: dvcrn
-    name: copilot-oauth-proxy
-  draft: true
+
 builds:
   - id: copilot-oauth-proxy
     main: ./cmd/copilot-oauth-proxy/
     binary: copilot-oauth-proxy
     env:
       - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+      - arm
+    goarm:
+      - 7
+    ignore:
+      - goos: windows
+        goarch: arm
+      - goos: darwin
+        goarch: arm
     flags:
       - -trimpath
       - -buildvcs=false
     ldflags:
       - -s -w -buildid=
-    goos:
-      - linux
-      - windows
-      - darwin
-    goarch:
-      - amd64
-      # For Apple Silicon (M1/M2)
-      - arm64
+
 archives:
-  - formats:
-      - tar.gz
-    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  - format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    wrap_in_directory: false
+    files: []
+
 checksum:
-  name_template: "checksums.txt"
+  name_template: checksums.txt
+
+release:
+  github:
+    owner: dvcrn
+    name: copilot-oauth-proxy
+  replace_existing_artifacts: true
+
 changelog:
   sort: asc
   filters:
     exclude:
       - "^docs:"
       - "^test:"
+      - "^ci:"
+      - "^chore:"
+      - Merge pull request
+      - Merge branch
